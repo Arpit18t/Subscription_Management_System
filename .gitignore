@@ -1,0 +1,19 @@
+@'
+# Python
+.venv/
+**/.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Environment secrets
+.env
+**/.env
+
+# Frontend
+node_modules/
+.next/
+
+# Testing
+.pytest_cache/
+'@ | Set-Content ..\.gitignore
