@@ -1,5 +1,27 @@
+<<<<<<< HEAD
 __pycache__/
 *.py[cod]
 venv/
 .venv/
 .env
+=======
+@'
+# Python
+.venv/
+**/.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Environment secrets
+.env
+**/.env
+
+# Frontend
+node_modules/
+.next/
+
+# Testing
+.pytest_cache/
+'@ | Set-Content ..\.gitignore
+>>>>>>> origin/feature/auth-and-products
