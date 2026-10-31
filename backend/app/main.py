@@ -13,7 +13,6 @@ app = FastAPI(
 )
 
 
-# Register authentication routes.
 app.include_router(auth_router)
 
 

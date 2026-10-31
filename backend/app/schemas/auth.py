@@ -13,17 +13,9 @@ from pydantic import (
 
 class UserRegister(BaseModel):
 
-    full_name: str = Field(
-        min_length=2,
-        max_length=100,
-    )
-
+    full_name: str = Field(min_length=2, max_length=100)
     email: EmailStr
-
-    password: str = Field(
-        min_length=9,
-        max_length=128,
-    )
+    password: str = Field(min_length=9, max_length=128)
 
     @field_validator("full_name")
     @classmethod
@@ -40,26 +32,30 @@ class UserRegister(BaseModel):
     def validate_password(cls, value: str) -> str:
 
         if len(value) <= 8:
-            raise ValueError(
-                "Password must contain more than 8 characters"
-            )
+            raise ValueError("Password must contain more than 8 characters")
 
         if not re.search(r"[A-Z]", value):
-            raise ValueError(
-                "Password must contain an uppercase letter"
-            )
+            raise ValueError("Password needs an uppercase letter")
 
         if not re.search(r"[a-z]", value):
-            raise ValueError(
-                "Password must contain a lowercase letter"
-            )
+            raise ValueError("Password needs a lowercase letter")
 
         if not re.search(r"[^A-Za-z0-9\s]", value):
-            raise ValueError(
-                "Password must contain a special character"
-            )
+            raise ValueError("Password needs a special character")
 
         return value
+
+
+class UserLogin(BaseModel):
+
+    email: EmailStr
+    password: str = Field(min_length=1, max_length=128)
+
+
+class TokenResponse(BaseModel):
+
+    access_token: str
+    token_type: str = "bearer"
 
 
 class UserResponse(BaseModel):

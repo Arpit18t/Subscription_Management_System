@@ -4,10 +4,20 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.core.dependencies import get_current_user
 from app.database.connection import get_db
 from app.models.user import User
-from app.schemas.auth import UserRegister, UserResponse
-from app.services.auth_service import hash_password
+from app.schemas.auth import (
+    UserRegister,
+    UserLogin,
+    UserResponse,
+    TokenResponse,
+)
+from app.services.auth_service import (
+    hash_password,
+    verify_password,
+    create_access_token,
+)
 
 
 router = APIRouter(
@@ -16,6 +26,7 @@ router = APIRouter(
 )
 
 
+# CUSTOMER REGISTRATION
 @router.post(
     "/register",
     response_model=UserResponse,
@@ -28,11 +39,8 @@ def register_customer(
 
     normalized_email = str(user_data.email).strip().lower()
 
-    # Check whether email already exists.
     existing_user = db.scalar(
-        select(User).where(
-            User.email == normalized_email
-        )
+        select(User).where(User.email == normalized_email)
     )
 
     if existing_user:
@@ -41,13 +49,10 @@ def register_customer(
             detail="This email is already registered.",
         )
 
-    # Hash password before storing it.
-    hashed_password = hash_password(user_data.password)
-
     new_user = User(
         full_name=user_data.full_name,
         email=normalized_email,
-        password_hash=hashed_password,
+        password_hash=hash_password(user_data.password),
         role="customer",
         is_active=True,
     )
@@ -66,3 +71,56 @@ def register_customer(
         )
 
     return new_user
+
+
+# CUSTOMER LOGIN
+@router.post(
+    "/login",
+    response_model=TokenResponse,
+)
+def login_customer(
+    user_data: UserLogin,
+    db: Session = Depends(get_db),
+):
+
+    normalized_email = str(user_data.email).strip().lower()
+
+    user = db.scalar(
+        select(User).where(User.email == normalized_email)
+    )
+
+    if user is None or not verify_password(
+        user_data.password,
+        user.password_hash,
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password.",
+        )
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your account is inactive.",
+        )
+
+    token = create_access_token(
+        user_id=user.id,
+        role=user.role,
+    )
+
+    return TokenResponse(
+        access_token=token,
+        token_type="bearer",
+    )
+
+
+# GET CURRENT LOGGED-IN USER
+@router.get(
+    "/me",
+    response_model=UserResponse,
+)
+def get_my_profile(
+    current_user: User = Depends(get_current_user),
+):
+    return current_user
