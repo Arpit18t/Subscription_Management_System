@@ -21,7 +21,7 @@ router = APIRouter(prefix="/invoices", tags=["Invoices"])
 
 @router.get("", response_model=List[InvoiceResponse])
 def list_invoices(
-    customer_id: Optional[uuid.UUID] = None,
+    customer_id: Optional[int] = None,
     subscription_id: Optional[uuid.UUID] = None,
     status_filter: Optional[str] = Query(None, alias="status"),
     page: int = Query(1, ge=1),

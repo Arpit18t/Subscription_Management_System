@@ -23,7 +23,6 @@ def test_customer_cannot_access_other_customer_invoice(
     """Test data isolation: customer A cannot view customer B's invoice."""
     # Create customer B
     other_customer = User(
-        id=uuid.uuid4(),
         email="other@brightloop.test",
         full_name="Other Customer",
         role="customer",
@@ -59,7 +58,6 @@ def test_customer_cannot_access_other_customer_invoice(
 def test_inactive_user_access_blocked(client: TestClient, db: Session):
     """Test that deactivated accounts are barred from performing operations."""
     banned_user = User(
-        id=uuid.uuid4(),
         email="banned@brightloop.test",
         full_name="Banned User",
         role="customer",

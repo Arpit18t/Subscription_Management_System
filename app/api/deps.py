@@ -9,8 +9,9 @@ from app.database import get_db
 from app.models.upstream import User
 from app.core.security import AuthenticatedUser
 
-# Default development/test fallback admin ID
-DEV_ADMIN_ID = uuid.UUID("00000000-0000-0000-0000-000000000001")
+# Default development/test fallback admin & customer ID
+DEV_ADMIN_ID = 1
+DEV_CUSTOMER_ID = 2
 
 
 def get_current_user(
@@ -23,8 +24,8 @@ def get_current_user(
 
     Supports:
     1. 'Bearer admin' -> Admin role
-    2. 'Bearer customer' or 'Bearer customer:<uuid>' -> Customer role
-    3. 'Bearer <uuid>:<role>' -> Specific user ID and role
+    2. 'Bearer customer' or 'Bearer customer:<int>' -> Customer role
+    3. 'Bearer <int>:<role>' -> Specific user ID and role
     4. X-User-Id and X-User-Role headers
     5. Database User lookup if user exists in DB
     """
@@ -38,7 +39,7 @@ def get_current_user(
 
     if x_user_id:
         try:
-            user_id = uuid.UUID(x_user_id)
+            user_id = int(x_user_id)
         except ValueError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -51,23 +52,23 @@ def get_current_user(
             role = "admin"
             email = "admin@brightloop.io"
         elif token_str == "customer-token" or token_str == "customer":
-            user_id = uuid.UUID("00000000-0000-0000-0000-000000000002")
+            user_id = DEV_CUSTOMER_ID
             role = "customer"
             email = "customer@brightloop.io"
         elif ":" in token_str:
             parts = token_str.split(":", 1)
             try:
-                user_id = uuid.UUID(parts[0])
+                user_id = int(parts[0])
             except ValueError:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid UUID in bearer token",
+                    detail="Invalid user ID in bearer token",
                 )
             role = parts[1].lower()
         else:
-            # Try to parse as single UUID
+            # Try to parse as integer user ID
             try:
-                user_id = uuid.UUID(token_str)
+                user_id = int(token_str)
                 # Check DB for user role
                 db_user = db.query(User).filter(User.id == user_id).first()
                 if db_user:
@@ -98,7 +99,7 @@ def get_current_user(
             email = db_user.email
 
     return AuthenticatedUser(
-        id=user_id or uuid.uuid4(),
+        id=user_id or DEV_CUSTOMER_ID,
         email=email,
         role=role,
         is_active=True,

@@ -25,7 +25,7 @@ class PaymentService:
         payment_method: str,
         transaction_reference: str,
         idempotency_key: str,
-        customer_id: uuid.UUID,
+        customer_id: int,
         note: Optional[str] = None,
     ) -> Payment:
         """Process a payment against an invoice with concurrency locking and reconciliation.

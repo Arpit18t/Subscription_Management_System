@@ -135,8 +135,8 @@ class Invoice(Base):
         nullable=False,
         index=True,
     )
-    customer_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False, index=True
+    customer_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="RESTRICT"), nullable=False, index=True
     )
     billing_period_start: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
@@ -335,8 +335,8 @@ class Payment(Base):
     invoice_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("invoices.id", ondelete="RESTRICT"), nullable=False, index=True
     )
-    customer_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False, index=True
+    customer_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="RESTRICT"), nullable=False, index=True
     )
     amount: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
     payment_method: Mapped[str] = mapped_column(

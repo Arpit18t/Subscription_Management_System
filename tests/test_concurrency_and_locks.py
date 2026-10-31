@@ -57,7 +57,6 @@ def test_concurrent_payment_overpayment_prevention():
     now = datetime.now(timezone.utc)
     try:
         cust = User(
-            id=uuid.uuid4(),
             email=f"concur_user_{uuid.uuid4().hex[:6]}@test.com",
             full_name="Concurrent Customer",
             role="customer",
@@ -176,7 +175,6 @@ def test_concurrent_discount_usage_limit():
         setup_session.add(rule)
 
         cust = User(
-            id=uuid.uuid4(),
             email=f"disc_user_{uuid.uuid4().hex[:6]}@test.com",
             full_name="Discount Customer",
             role="customer",

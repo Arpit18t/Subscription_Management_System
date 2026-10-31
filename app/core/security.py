@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 class AuthenticatedUser(BaseModel):
     """Normalized authenticated user representation."""
-    id: UUID
+    id: int
     email: str
     role: str  # 'admin' or 'customer'
     is_active: bool = True

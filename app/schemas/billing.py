@@ -144,7 +144,7 @@ class PaymentCreate(BaseModel):
 class PaymentResponse(BaseModel):
     id: UUID
     invoice_id: UUID
-    customer_id: UUID
+    customer_id: int
     amount: Decimal
     payment_method: str
     status: str
@@ -166,7 +166,7 @@ class InvoiceResponse(BaseModel):
     id: UUID
     invoice_number: str
     subscription_id: UUID
-    customer_id: UUID
+    customer_id: int
     billing_period_start: datetime
     billing_period_end: datetime
     status: str

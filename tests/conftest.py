@@ -75,7 +75,6 @@ def client(db: Session) -> TestClient:
 def admin_user(db: Session) -> User:
     """Create and return an admin user."""
     admin = User(
-        id=uuid.uuid4(),
         email="admin@brightloop.test",
         full_name="Admin Brightloop",
         role="admin",
@@ -91,7 +90,6 @@ def admin_user(db: Session) -> User:
 def customer_user(db: Session) -> User:
     """Create and return a customer user."""
     customer = User(
-        id=uuid.uuid4(),
         email="customer@brightloop.test",
         full_name="Customer Jane Doe",
         role="customer",

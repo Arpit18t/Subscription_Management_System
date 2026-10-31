@@ -57,7 +57,7 @@ def record_payment(
 @router.get("", response_model=List[PaymentResponse])
 def list_payments(
     invoice_id: Optional[uuid.UUID] = Query(None),
-    customer_id: Optional[uuid.UUID] = Query(None),
+    customer_id: Optional[int] = Query(None),
     payment_method: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),

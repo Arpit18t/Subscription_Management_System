@@ -25,8 +25,8 @@ class User(Base):
     """User account entity (Customer/Admin). Owned by Member 1."""
     __tablename__ = "users"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True, index=True
     )
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -92,8 +92,8 @@ class Subscription(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    customer_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False, index=True
+    customer_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="RESTRICT"), nullable=False, index=True
     )
     plan_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("plans.id", ondelete="RESTRICT"), nullable=False, index=True

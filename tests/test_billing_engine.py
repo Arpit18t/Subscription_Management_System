@@ -108,7 +108,6 @@ def test_database_rollback_and_isolation_after_failure(
 
     # Create a second subscription whose customer is inactive (will fail eligibility check)
     inactive_customer = User(
-        id=uuid.uuid4(),
         email="inactive@brightloop.test",
         full_name="Inactive User",
         role="customer",
@@ -116,6 +115,7 @@ def test_database_rollback_and_isolation_after_failure(
     )
     db.add(inactive_customer)
     db.commit()
+    db.refresh(inactive_customer)
 
     bad_sub = Subscription(
         id=uuid.uuid4(),

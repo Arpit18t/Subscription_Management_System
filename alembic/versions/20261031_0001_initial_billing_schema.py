@@ -22,7 +22,7 @@ def upgrade() -> None:
     # --- Upstream Prerequisite Tables (created if not exists for modularity) ---
     op.execute("""
     CREATE TABLE IF NOT EXISTS users (
-        id UUID PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         email VARCHAR(255) NOT NULL UNIQUE,
         full_name VARCHAR(255) NOT NULL,
         role VARCHAR(32) NOT NULL DEFAULT 'customer',
@@ -56,7 +56,7 @@ def upgrade() -> None:
 
     CREATE TABLE IF NOT EXISTS subscriptions (
         id UUID PRIMARY KEY,
-        customer_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+        customer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
         plan_id UUID NOT NULL REFERENCES plans(id) ON DELETE RESTRICT,
         status VARCHAR(32) NOT NULL DEFAULT 'active',
         current_period_start TIMESTAMPTZ NOT NULL,
@@ -135,7 +135,7 @@ def upgrade() -> None:
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
         sa.Column('invoice_number', sa.String(length=64), nullable=False),
         sa.Column('subscription_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('subscriptions.id', ondelete='RESTRICT'), nullable=False),
-        sa.Column('customer_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('users.id', ondelete='RESTRICT'), nullable=False),
+        sa.Column('customer_id', sa.Integer(), sa.ForeignKey('users.id', ondelete='RESTRICT'), nullable=False),
         sa.Column('billing_period_start', sa.DateTime(timezone=True), nullable=False),
         sa.Column('billing_period_end', sa.DateTime(timezone=True), nullable=False),
         sa.Column('status', sa.String(length=32), nullable=False, server_default='draft'),
@@ -229,7 +229,7 @@ def upgrade() -> None:
         'payments',
         sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
         sa.Column('invoice_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('invoices.id', ondelete='RESTRICT'), nullable=False),
-        sa.Column('customer_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('users.id', ondelete='RESTRICT'), nullable=False),
+        sa.Column('customer_id', sa.Integer(), sa.ForeignKey('users.id', ondelete='RESTRICT'), nullable=False),
         sa.Column('amount', sa.Numeric(precision=12, scale=2), nullable=False),
         sa.Column('payment_method', sa.String(length=32), nullable=False),
         sa.Column('status', sa.String(length=32), nullable=False, server_default='successful'),
