@@ -3,831 +3,640 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brightloop — Quantum Subscription Engine OS 2.0</title>
+  <title>Brightloop — Engineering Subscription Platform (ZeBeyond UI)</title>
   
-  <!-- Fonts: Plus Jakarta Sans for UI + Geist Mono for Numbers/Financials -->
+  <!-- Inter & Geist Mono Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="theme-olive-luxe" id="appBody">
+<body class="zebeyond-theme">
 
-  <!-- Command Palette Modal (Cmd+K) -->
-  <div id="commandPalette" class="palette-backdrop hidden" onclick="closePaletteOnBackdrop(event)">
-    <div class="palette-modal">
-      <div class="palette-header">
-        <i class="fa-solid fa-terminal text-olive"></i>
-        <input type="text" id="paletteSearchInput" placeholder="Type a command or jump to feature (e.g. 'new quote', 'fast forward', 'active')..." oninput="filterPalette()" />
-        <span class="palette-esc-badge">ESC</span>
+  <!-- Top Navigation Header -->
+  <header class="zb-header">
+    <div class="header-brand-group">
+      <div class="zb-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
       </div>
-      <div class="palette-results" id="paletteResults">
-        <!-- Dynamically rendered commands -->
+      <div class="brand-text">
+        <span class="brand-name">Brightloop</span>
+        <span class="brand-badge">PLATFORM</span>
+      </div>
+      <div class="platform-chip">
+        <span class="pulse-point"></span>
+        <span>ZeBeyond Engine v2.4</span>
       </div>
     </div>
-  </div>
 
-  <!-- Main Application Layout -->
-  <div class="quantum-layout">
-    
-    <!-- Left Navigation Dock (Sleek High-Tech Vertical Strip) -->
-    <aside class="quantum-dock">
-      <div class="dock-brand" title="Brightloop Quantum Engine">
-        <div class="brand-crystal">
-          <div class="crystal-core"></div>
-        </div>
-        <div class="brand-details">
-          <span class="brand-name">Brightloop</span>
-          <span class="brand-tag">OLIVE OS 2.0</span>
-        </div>
-      </div>
+    <!-- Center Navigation Tabs -->
+    <nav class="zb-nav">
+      <button class="nav-link active" onclick="navigate('overview')" data-view="overview">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Overview</span>
+      </button>
+      <button class="nav-link" onclick="navigate('quotes')" data-view="quotes">
+        <i class="fa-solid fa-file-invoice"></i>
+        <span>Quote Studio</span>
+      </button>
+      <button class="nav-link" onclick="navigate('subscriptions')" data-view="subscriptions">
+        <i class="fa-solid fa-layer-group"></i>
+        <span>Subscriptions (<span id="navSubsCount">32</span>)</span>
+      </button>
+      <button class="nav-link" onclick="navigate('plans')" data-view="plans">
+        <i class="fa-solid fa-cubes"></i>
+        <span>Plans Matrix</span>
+      </button>
+      <button class="nav-link" onclick="navigate('simulator')" data-view="simulator">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>Simulation Cycle</span>
+      </button>
+    </nav>
 
-      <nav class="dock-nav">
-        <button class="dock-btn active" onclick="switchView('visual-flow')" data-view="visual-flow" title="Interactive State Flow">
-          <i class="fa-solid fa-network-wired"></i>
-          <span class="dock-btn-label">State Flow</span>
-          <span class="active-beacon"></span>
-        </button>
+    <!-- Header Right Controls -->
+    <div class="zb-header-actions">
+      <button class="btn-zb-primary" onclick="navigate('quotes')">
+        <i class="fa-solid fa-plus"></i> New License Quote
+      </button>
 
-        <button class="dock-btn" onclick="switchView('quote-studio')" data-view="quote-studio" title="Interactive Quote Studio">
-          <i class="fa-solid fa-sliders"></i>
-          <span class="dock-btn-label">Quote Studio</span>
-          <span class="active-beacon"></span>
-        </button>
-
-        <button class="dock-btn" onclick="switchView('subscriptions-manager')" data-view="subscriptions-manager" title="Subscription State Machine">
-          <i class="fa-solid fa-arrows-spin"></i>
-          <span class="dock-btn-label">Lifecycle</span>
-          <span class="active-beacon"></span>
-        </button>
-
-        <button class="dock-btn" onclick="switchView('plans-matrix')" data-view="plans-matrix" title="Plans & Policies Matrix">
-          <i class="fa-solid fa-cubes"></i>
-          <span class="dock-btn-label">Plans</span>
-          <span class="active-beacon"></span>
-        </button>
-
-        <button class="dock-btn" onclick="switchView('simulation-time')" data-view="simulation-time" title="Time-Travel Simulator">
-          <i class="fa-solid fa-gauge-high"></i>
-          <span class="dock-btn-label">Simulator</span>
-          <span class="active-beacon"></span>
-        </button>
-      </nav>
-
-      <!-- Bottom Audio, Theme & Developer Card -->
-      <div class="dock-footer">
-        <!-- In-App Olive Palette Switcher -->
-        <div class="dock-theme-selector">
-          <span class="selector-label"><i class="fa-solid fa-palette text-gold"></i> Theme Mode:</span>
-          <div class="theme-btn-group">
-            <button class="theme-pill active" onclick="setAppTheme('theme-olive-luxe')" title="Deep Olive & Brushed Gold">Olive</button>
-            <button class="theme-pill" onclick="setAppTheme('theme-forest-noir')" title="Forest Emerald & Mint">Forest</button>
-            <button class="theme-pill" onclick="setAppTheme('theme-sage-slate')" title="Nordic Sage & Amber">Sage</button>
-          </div>
-        </div>
-
-        <button class="audio-toggle-btn" id="audioToggleBtn" onclick="toggleAudio()" title="Sound FX Toggle">
-          <i class="fa-solid fa-volume-high" id="audioIcon"></i>
-          <span class="audio-label">FX: ON</span>
-        </button>
-
-        <div class="architect-badge" title="Task 2 Lead: Ritesh Tiwari">
-          <div class="architect-avatar">RT</div>
-          <div class="architect-info">
-            <span class="arch-name">Ritesh Tiwari</span>
-            <span class="arch-role">Task 2 Lead • Engine</span>
-          </div>
+      <div class="lead-badge" title="Lead Architect: Ritesh Tiwari">
+        <div class="lead-avatar">RT</div>
+        <div class="lead-meta">
+          <span class="lead-name">Ritesh Tiwari</span>
+          <span class="lead-role">Task 2 Lead</span>
         </div>
       </div>
-    </aside>
+    </div>
+  </header>
 
-    <!-- Main Dynamic Screen Canvas -->
-    <main class="quantum-viewport">
+  <!-- Main Viewport Container -->
+  <main class="zb-viewport">
+
+    <!-- =========================================================================
+         VIEW 1: OVERVIEW & TELEMETRY KPIS
+         ========================================================================= -->
+    <section id="view-overview" class="view-pane active">
       
-      <!-- Top Command Bar -->
-      <header class="command-bar">
-        <div class="bar-left">
-          <div class="screen-title-group">
-            <h1 class="screen-heading" id="screenHeading">Visual Journey & State Machine</h1>
-            <p class="screen-subheading" id="screenSubheading">Live reactive pipeline orchestrating Quotations, Odoo Variant Surcharges & State Transitions</p>
+      <!-- Top Title & Quick Status -->
+      <div class="section-title-bar">
+        <div>
+          <h2>System Telemetry &amp; Revenue Overview</h2>
+          <p class="subtitle">Real-time enterprise metrics, active seat utilization, and recurring billing performance.</p>
+        </div>
+        <div class="engine-status-pill">
+          <i class="fa-solid fa-shield-halved text-green"></i>
+          <span>Idempotency Guard: <b>ACTIVE</b></span>
+        </div>
+      </div>
+
+      <!-- ZeBeyond Modular Metric Cards Grid -->
+      <div class="metric-tiles-grid">
+        <div class="tile-card">
+          <div class="tile-top">
+            <span class="tile-label">Annual Recurring Revenue (ARR)</span>
+            <i class="fa-solid fa-arrow-trend-up text-green"></i>
+          </div>
+          <div class="tile-value" id="arrMetric">$184,320.00</div>
+          <div class="tile-footer">
+            <span class="badge-pill positive"><i class="fa-solid fa-arrow-up"></i> +24.8%</span>
+            <span class="text-dim">MRR: <b id="mrrMetric">$15,360.00</b></span>
           </div>
         </div>
 
-        <div class="bar-right">
-          <!-- Command Palette Trigger -->
-          <button class="quick-cmd-btn" onclick="openPalette()">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <span>Command Hub</span>
-            <kbd>⌘K</kbd>
-          </button>
-
-          <!-- Fast Simulation Quick Trigger -->
-          <div class="time-warp-pill" title="Advance system clock">
-            <i class="fa-regular fa-clock text-gold"></i>
-            <span class="virtual-date" id="virtualDateDisplay">Today: 31 Oct 2026</span>
-            <button class="warp-btn" onclick="timeWarp(7)" title="Fast forward 7 days">+7 Days</button>
-            <button class="warp-btn highlight" onclick="timeWarp(30)" title="Fast forward 30 days">+30d Cycle</button>
+        <div class="tile-card">
+          <div class="tile-top">
+            <span class="tile-label">Active License Nodes</span>
+            <i class="fa-solid fa-circle-check text-green"></i>
           </div>
-
-          <!-- Odoo Wire Protocol Badge -->
-          <button class="odoo-wire-btn" onclick="toggleOdooDrawer()" title="View live Odoo 18 RPC wire logs">
-            <span class="pulse-indicator"></span>
-            <i class="fa-solid fa-bolt"></i>
-            <span>Odoo 18 Wire</span>
-          </button>
-        </div>
-      </header>
-
-      <!-- VIEW 1: INTERACTIVE VISUAL PIPELINE FLOW (Unique Node-Based Experience) -->
-      <section id="view-visual-flow" class="viewport-section active">
-        
-        <!-- Live Engine KPI Strip -->
-        <div class="kpi-grid">
-          <div class="kpi-card accent-olive">
-            <div class="kpi-header">
-              <span class="kpi-title">Active ARR Pipeline</span>
-              <i class="fa-solid fa-chart-line"></i>
-            </div>
-            <div class="kpi-value" id="kpiArr">$184,320</div>
-            <div class="kpi-footer">
-              <span class="badge-growth"><i class="fa-solid fa-arrow-trend-up"></i> +24.8%</span>
-              <span class="kpi-context">MRR: <b id="kpiMrr">$15,360</b></span>
-            </div>
-          </div>
-
-          <div class="kpi-card accent-emerald">
-            <div class="kpi-header">
-              <span class="kpi-title">Active Subscriptions</span>
-              <i class="fa-solid fa-circle-check"></i>
-            </div>
-            <div class="kpi-value" id="kpiActiveCount">32</div>
-            <div class="kpi-footer">
-              <span class="badge-neutral">0 Churn</span>
-              <span class="kpi-context">Avg Retention: <b>98.4%</b></span>
-            </div>
-          </div>
-
-          <div class="kpi-card accent-gold">
-            <div class="kpi-header">
-              <span class="kpi-title">Open Quotations (30d)</span>
-              <i class="fa-solid fa-file-signature"></i>
-            </div>
-            <div class="kpi-value" id="kpiQuotesCount">8</div>
-            <div class="kpi-footer">
-              <span class="badge-warn">Valid 30 Days</span>
-              <span class="kpi-context">Potential: <b>$42,800</b></span>
-            </div>
-          </div>
-
-          <div class="kpi-card accent-brass">
-            <div class="kpi-header">
-              <span class="kpi-title">Odoo Surcharge Yield</span>
-              <i class="fa-solid fa-cube"></i>
-            </div>
-            <div class="kpi-value" id="kpiSurchargeYield">+$560 / seat</div>
-            <div class="kpi-footer">
-              <span class="badge-gold">18% GST Compliant</span>
-              <span class="kpi-context">Tax Engine: <b>CGST+SGST</b></span>
-            </div>
+          <div class="tile-value" id="activeNodesMetric">32</div>
+          <div class="tile-footer">
+            <span class="badge-pill neutral">0 Churn</span>
+            <span class="text-dim">Avg Retention: <b>98.4%</b></span>
           </div>
         </div>
 
-        <!-- Interactive Visual Journey Node Map -->
-        <div class="flow-canvas-container">
-          <div class="canvas-header">
-            <div class="canvas-title">
-              <i class="fa-solid fa-diagram-project text-olive"></i>
-              <h3>Real-Time Lifecycle Pipeline Architecture</h3>
-              <span class="live-tag"><span class="live-dot"></span> LIVE REACTIVE</span>
-            </div>
-            <div class="canvas-actions">
-              <button class="pill-action-btn" onclick="openNewQuoteModal()">
-                <i class="fa-solid fa-plus"></i> Compose New Quote
-              </button>
-            </div>
+        <div class="tile-card">
+          <div class="tile-top">
+            <span class="tile-label">Open Quotations (30d Validity)</span>
+            <i class="fa-solid fa-file-signature text-gold"></i>
           </div>
-
-          <!-- The Visual Node Flow Diagram -->
-          <div class="node-flow-wrapper">
-            
-            <!-- Step 1: Draft Config -->
-            <div class="flow-node node-draft" onclick="filterByState('draft')">
-              <div class="node-badge">STEP 01</div>
-              <div class="node-icon"><i class="fa-solid fa-pen-ruler"></i></div>
-              <div class="node-info">
-                <h4>Draft Plan</h4>
-                <p>Plan selection, min seat guard &amp; discount tiers</p>
-                <div class="node-count" id="countDraft">4 In Draft</div>
-              </div>
-            </div>
-
-            <!-- Connector Line 1 -->
-            <div class="flow-connector">
-              <div class="connector-line">
-                <span class="packet-particle"></span>
-              </div>
-              <span class="connector-label">Auto Calc (18% Tax)</span>
-            </div>
-
-            <!-- Step 2: Quotation Generated -->
-            <div class="flow-node node-quotation" onclick="filterByState('quotation')">
-              <div class="node-badge">STEP 02</div>
-              <div class="node-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-              <div class="node-info">
-                <h4>Quotation Issued</h4>
-                <p>Odoo variant surcharge + 30-day countdown timer</p>
-                <div class="node-count" id="countQuotation">8 Pending Sign</div>
-              </div>
-            </div>
-
-            <!-- Connector Line 2 -->
-            <div class="flow-connector">
-              <div class="connector-line">
-                <span class="packet-particle speed-fast"></span>
-              </div>
-              <span class="connector-label">Customer E-Sign</span>
-            </div>
-
-            <!-- Step 3: Confirmed / Invoicing Gate -->
-            <div class="flow-node node-confirmed" onclick="filterByState('confirmed')">
-              <div class="node-badge">STEP 03</div>
-              <div class="node-icon"><i class="fa-solid fa-shield-halved"></i></div>
-              <div class="node-info">
-                <h4>Confirmed Gate</h4>
-                <p>Idempotency verification &amp; order confirmation</p>
-                <div class="node-count" id="countConfirmed">3 Confirmed</div>
-              </div>
-            </div>
-
-            <!-- Connector Line 3 -->
-            <div class="flow-connector">
-              <div class="connector-line">
-                <span class="packet-particle"></span>
-              </div>
-              <span class="connector-label">Activate State</span>
-            </div>
-
-            <!-- Step 4: Active Running -->
-            <div class="flow-node node-active" onclick="filterByState('active')">
-              <div class="node-badge active-badge">STEP 04 • LIVE</div>
-              <div class="node-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
-              <div class="node-info">
-                <h4>Active Running</h4>
-                <p>Daily/Weekly/Monthly cycles, recurring invoicing</p>
-                <div class="node-count text-emerald" id="countActive">32 Active Stream</div>
-              </div>
-            </div>
-
-            <!-- Split Branches: Pause / Close -->
-            <div class="branch-connector">
-              <div class="branch-leg branch-pause" onclick="filterByState('paused')">
-                <i class="fa-solid fa-pause"></i>
-                <span>Paused (<b id="countPaused">2</b>)</span>
-              </div>
-              <div class="branch-leg branch-closed" onclick="filterByState('closed')">
-                <i class="fa-solid fa-ban"></i>
-                <span>Early Close (<b id="countClosed">5</b>)</span>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="canvas-footer-tip">
-            <i class="fa-solid fa-circle-info text-olive"></i>
-            <span>Click any pipeline node to inspect real-time items in that state. Use <b>Time-Travel Fast-Forward</b> at top to simulate cycle transitions!</span>
+          <div class="tile-value" id="openQuotesMetric">8</div>
+          <div class="tile-footer">
+            <span class="badge-pill warning">Pending Customer Sign</span>
+            <span class="text-dim">Volume: <b>$42,800</b></span>
           </div>
         </div>
 
-        <!-- Live Subscriptions Quick Stream -->
-        <div class="quick-table-card">
-          <div class="card-header-bar">
-            <div class="header-left">
-              <h3>Live Subscription Engine Records</h3>
-              <span class="table-counter" id="activeFilterLabel">Showing All Active Records</span>
-            </div>
-            <div class="header-right">
-              <input type="text" class="search-input-sleek" id="subSearchInput" placeholder="Filter by customer, ID or plan..." oninput="handleSubSearch()" />
-              <button class="btn-ghost-sm" onclick="resetStateFilter()"><i class="fa-solid fa-filter-circle-xmark"></i> Clear Filter</button>
-            </div>
+        <div class="tile-card">
+          <div class="tile-top">
+            <span class="tile-label">Odoo Variant Surcharge Yield</span>
+            <i class="fa-solid fa-cube text-green"></i>
           </div>
-
-          <div class="table-responsive">
-            <table class="quantum-table">
-              <thead>
-                <tr>
-                  <th>Subscription ID</th>
-                  <th>Customer</th>
-                  <th>Plan &amp; Recurrence</th>
-                  <th>Seats</th>
-                  <th>Odoo Surcharge</th>
-                  <th>Monthly Total</th>
-                  <th>State Machine Status</th>
-                  <th>Policies</th>
-                  <th>Lifecycle Actions</th>
-                </tr>
-              </thead>
-              <tbody id="subscriptionsTableBody">
-                <!-- Dynamically populated rows -->
-              </tbody>
-            </table>
+          <div class="tile-value">+$560 / seat</div>
+          <div class="tile-footer">
+            <span class="badge-pill gold">18% GST Compliant</span>
+            <span class="text-dim">Tax: <b>CGST + SGST</b></span>
           </div>
         </div>
+      </div>
 
-      </section>
-
-      <!-- VIEW 2: INTERACTIVE LIVE QUOTE STUDIO & HOLOGRAPHIC PASS -->
-      <section id="view-quote-studio" class="viewport-section">
-        <div class="studio-split-grid">
-          
-          <!-- Left: Real-Time Configurator -->
-          <div class="studio-card config-panel">
-            <div class="studio-card-header">
-              <div class="card-title">
-                <i class="fa-solid fa-sliders text-olive"></i>
-                <h3>Dynamic Quotation Composer</h3>
-              </div>
-              <span class="spec-tag">Task 2 Engine</span>
-            </div>
-
-            <div class="config-form">
-              <!-- Customer & Company -->
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label>Customer Name / Enterprise</label>
-                  <input type="text" id="cfgCustomer" value="Acme Hyperloop Corp" oninput="recalcQuoteLive()" />
-                </div>
-                <div class="form-group">
-                  <label>Contact Email</label>
-                  <input type="email" id="cfgEmail" value="procurement@acme.io" oninput="recalcQuoteLive()" />
-                </div>
-              </div>
-
-              <!-- Base Plan Selection -->
-              <div class="form-group">
-                <label>Target Subscription Plan</label>
-                <div class="plan-selector-grid">
-                  <div class="plan-choice active" onclick="selectStudioPlan(this, 'growth')" data-plan="growth">
-                    <div class="choice-title">Growth Tier</div>
-                    <div class="choice-price">$149<span>/mo</span></div>
-                    <div class="choice-sub">Monthly • Min 5 seats</div>
-                  </div>
-                  <div class="plan-choice" onclick="selectStudioPlan(this, 'starter')" data-plan="starter">
-                    <div class="choice-title">Starter Pack</div>
-                    <div class="choice-price">$49<span>/mo</span></div>
-                    <div class="choice-sub">Weekly • Min 1 seat</div>
-                  </div>
-                  <div class="plan-choice" onclick="selectStudioPlan(this, 'enterprise')" data-plan="enterprise">
-                    <div class="choice-title">Enterprise Cloud</div>
-                    <div class="choice-price">$399<span>/mo</span></div>
-                    <div class="choice-sub">Yearly • Min 10 seats</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Seats Slider with Dynamic Volume Discount -->
-              <div class="form-group">
-                <div class="slider-header">
-                  <label>Committed User Seats</label>
-                  <div class="slider-val-badge"><span id="seatCountDisplay">12</span> Seats</div>
-                </div>
-                <input type="range" id="seatSlider" min="1" max="100" value="12" class="quantum-slider" oninput="handleSeatSlider(this.value)" />
-                <div class="slider-ticks">
-                  <span>1</span>
-                  <span>10 (5% off)</span>
-                  <span>25 (10% off)</span>
-                  <span>50 (15% off)</span>
-                  <span>100</span>
-                </div>
-                <div id="seatMinWarning" class="seat-warning hidden">
-                  <i class="fa-solid fa-triangle-exclamation"></i>
-                  <span>Selected plan requires a minimum of <b id="minSeatReq">5</b> seats!</span>
-                </div>
-              </div>
-
-              <!-- Core ERP & Odoo Variant Surcharge Section -->
-              <div class="surcharge-box">
-                <div class="surcharge-header">
-                  <div class="surcharge-text">
-                    <span class="box-label"><i class="fa-solid fa-cube text-gold"></i> Core Product &amp; Variant</span>
-                    <h4>Core Cloud ERP + Odoo Enterprise Edition</h4>
-                    <p>Base price: $1,200.00/yr. Adds Odoo 18 Multi-Company &amp; Accounting Sync.</p>
-                  </div>
-                  <label class="toggle-switch">
-                    <input type="checkbox" id="odooSurchargeToggle" checked onchange="recalcQuoteLive()" />
-                    <span class="switch-slider"></span>
-                  </label>
-                </div>
-                <div class="surcharge-badge-strip">
-                  <span class="badge-pill">+ $560.00 / seat Odoo Surcharge</span>
-                  <span class="badge-pill">Variant: v18.0-EE</span>
-                </div>
-              </div>
-
-              <!-- Add-ons Selection -->
-              <div class="form-group">
-                <label>Enterprise Add-On Line Items</label>
-                <div class="addon-checkbox-list">
-                  <label class="addon-item">
-                    <input type="checkbox" id="addonSLA" checked onchange="recalcQuoteLive()" />
-                    <div class="addon-label">
-                      <span class="addon-name">24/7 Mission-Critical SLA &amp; Support</span>
-                      <span class="addon-price">+$500.00 / month</span>
-                    </div>
-                  </label>
-
-                  <label class="addon-item">
-                    <input type="checkbox" id="addonBackup" onchange="recalcQuoteLive()" />
-                    <div class="addon-label">
-                      <span class="addon-name">Multi-Region Hot-Failover &amp; Disaster Recovery</span>
-                      <span class="addon-price">+$250.00 / month</span>
-                    </div>
-                  </label>
-                </div>
-              </div>
-
-              <!-- Lifecycle Policies Configuration -->
-              <div class="policy-config-grid">
-                <div class="policy-header">Lifecycle Governance Policies</div>
-                <div class="policy-toggles">
-                  <label class="policy-toggle">
-                    <input type="checkbox" id="polAutoClose" checked />
-                    <span>Auto-close on expiration</span>
-                  </label>
-                  <label class="policy-toggle">
-                    <input type="checkbox" id="polClosable" checked />
-                    <span>Allow early customer termination</span>
-                  </label>
-                  <label class="policy-toggle">
-                    <input type="checkbox" id="polPausable" checked />
-                    <span>Allow pause &amp; resume</span>
-                  </label>
-                  <label class="policy-toggle">
-                    <input type="checkbox" id="polRenewable" checked />
-                    <span>Allow one-click auto-renew</span>
-                  </label>
-                </div>
-              </div>
-
-            </div>
+      <!-- Subscriptions Quick Table Panel -->
+      <div class="zb-panel">
+        <div class="panel-topbar">
+          <div class="panel-heading">
+            <h3>Active Subscriptions Stream</h3>
+            <span class="panel-count-tag" id="overviewFilterTag">Showing All Records</span>
           </div>
-
-          <!-- Right: Photorealistic Glassmorphic Quotation Pass -->
-          <div class="studio-card live-quote-pass">
-            <div class="pass-container">
-              
-              <!-- Header Ribbon in Brushed Gold & Olive -->
-              <div class="pass-ribbon">
-                <div class="ribbon-brand">
-                  <i class="fa-solid fa-shapes text-olive"></i>
-                  <span>Brightloop Official Quotation</span>
-                </div>
-                <div class="validity-badge">
-                  <i class="fa-solid fa-clock-rotate-left"></i>
-                  <span>Valid for <b>30 Days</b></span>
-                </div>
-              </div>
-
-              <!-- Quotation Meta Bar -->
-              <div class="pass-meta-bar">
-                <div>
-                  <span class="meta-label">QUOTE REF</span>
-                  <div class="meta-val" id="quoteRefNumber">QT-2026-0842</div>
-                </div>
-                <div>
-                  <span class="meta-label">DATE ISSUED</span>
-                  <div class="meta-val" id="quoteIssueDate">31 Oct 2026</div>
-                </div>
-                <div>
-                  <span class="meta-label">EXPIRY DATE</span>
-                  <div class="meta-val" id="quoteExpiryDate">30 Nov 2026</div>
-                </div>
-                <div>
-                  <span class="meta-label">TAX STATUS</span>
-                  <div class="meta-val text-emerald">18% GST Verified</div>
-                </div>
-              </div>
-
-              <!-- Customer Address Box -->
-              <div class="pass-bill-to">
-                <div class="bill-label">ISSUED TO:</div>
-                <h4 id="passCustomerName">Acme Hyperloop Corp</h4>
-                <p id="passCustomerEmail">procurement@acme.io</p>
-                <div class="verification-seal">
-                  <i class="fa-solid fa-fingerprint"></i> SECURE DIGITAL ENGINE
-                </div>
-              </div>
-
-              <!-- Product Line Items Table -->
-              <div class="pass-items-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Line Item Description</th>
-                      <th>Qty</th>
-                      <th>Unit Rate</th>
-                      <th class="text-right">Line Total</th>
-                    </tr>
-                  </thead>
-                  <tbody id="quoteLineItemsBody">
-                    <!-- Dynamic Line Items -->
-                  </tbody>
-                </table>
-              </div>
-
-              <!-- Financial Breakdown Summary (Tax & Surcharge) -->
-              <div class="pass-totals">
-                <div class="total-row">
-                  <span>Subtotal (Base &amp; Add-ons):</span>
-                  <span id="passSubtotal">$2,288.00</span>
-                </div>
-                <div class="total-row" id="passSurchargeRow">
-                  <span>Odoo Enterprise Surcharge (+$560 &times; <span id="passSurchargeSeats">12</span>):</span>
-                  <span id="passSurchargeTotal" class="text-gold">+$6,720.00</span>
-                </div>
-                <div class="total-row discount-row" id="passDiscountRow">
-                  <span>Volume Tier Discount (5%):</span>
-                  <span id="passDiscountTotal" class="text-emerald">-$450.40</span>
-                </div>
-                <div class="total-row">
-                  <span>GST / Tax Engine (18% - CGST 9% + SGST 9%):</span>
-                  <span id="passTaxTotal">$1,540.37</span>
-                </div>
-                <div class="total-row grand-total-row">
-                  <span>Total Amount Payable:</span>
-                  <span id="passGrandTotal" class="text-olive">$10,097.97</span>
-                </div>
-              </div>
-
-              <!-- Interactive Actions: Sign & Convert -->
-              <div class="pass-actions">
-                <button class="btn-convert-subscription" onclick="convertQuoteToSubscription()">
-                  <i class="fa-solid fa-wand-magic-sparkles"></i>
-                  <span>Instant Convert to Active Subscription</span>
-                </button>
-                <button class="btn-secondary-pass" onclick="printQuotationPass()">
-                  <i class="fa-solid fa-print"></i> Export Official PDF
-                </button>
-              </div>
-
-              <!-- Pass Footer Barcode & Hash -->
-              <div class="pass-barcode-footer">
-                <div class="barcode-graphic">||| | |||| | ||| ||||| || | |||| |||</div>
-                <div class="hash-text">HASH: 0x8F9B2C4E • ODOO-18-COMPLIANT-LEDGER</div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- VIEW 3: SUBSCRIPTION LIFECYCLE STATE MACHINE -->
-      <section id="view-subscriptions-manager" class="viewport-section">
-        
-        <!-- State Machine Explainer Card -->
-        <div class="state-machine-card">
-          <div class="sm-header">
-            <div>
-              <h3>Subscription State Machine Enforcement</h3>
-              <p>Strict deterministic lifecycle transitions with policy safeguards &amp; proration accounting</p>
-            </div>
-            <div class="sm-legend">
-              <span class="legend-chip state-draft">Draft</span>
-              <i class="fa-solid fa-arrow-right"></i>
-              <span class="legend-chip state-quotation">Quotation</span>
-              <i class="fa-solid fa-arrow-right"></i>
-              <span class="legend-chip state-confirmed">Confirmed</span>
-              <i class="fa-solid fa-arrow-right"></i>
-              <span class="legend-chip state-active">Active</span>
-              <i class="fa-solid fa-arrow-right-arrow-left"></i>
-              <span class="legend-chip state-paused">Paused</span>
-              <i class="fa-solid fa-arrow-right"></i>
-              <span class="legend-chip state-closed">Closed</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Full Subscription Records Grid with Interactive Controls -->
-        <div class="subs-full-container">
-          <div class="records-header-bar">
-            <div class="bar-filter-pills">
-              <button class="filter-pill active" onclick="filterLifecycleState('all')">All Records (<span id="pillCountAll">0</span>)</button>
-              <button class="filter-pill" onclick="filterLifecycleState('active')">Active (<span id="pillCountActive">0</span>)</button>
-              <button class="filter-pill" onclick="filterLifecycleState('quotation')">Quotations (<span id="pillCountQuotes">0</span>)</button>
-              <button class="filter-pill" onclick="filterLifecycleState('paused')">Paused (<span id="pillCountPaused">0</span>)</button>
-              <button class="filter-pill" onclick="filterLifecycleState('closed')">Closed (<span id="pillCountClosed">0</span>)</button>
-            </div>
-            <button class="btn-primary-action" onclick="switchView('quote-studio')">
-              <i class="fa-solid fa-plus"></i> New Subscription
+          <div class="panel-controls">
+            <input type="text" class="zb-search" id="overviewSearchInput" placeholder="Search customer, ID or plan..." oninput="filterOverviewTable()" />
+            <button class="btn-zb-secondary" onclick="exportSubscriptionsCSV()">
+              <i class="fa-solid fa-file-csv"></i> Export CSV
             </button>
           </div>
-
-          <div class="subscription-cards-grid" id="subscriptionCardsGrid">
-            <!-- Dynamic rich subscription cards rendered here -->
-          </div>
         </div>
 
-      </section>
-
-      <!-- VIEW 4: PLANS & RECURRENCE MATRIX -->
-      <section id="view-plans-matrix" class="viewport-section">
-        <div class="plans-intro">
-          <div>
-            <h3>Subscription Plans &amp; Invoicing Policies</h3>
-            <p>Configured with Daily, Weekly, Monthly, and Annual recurrences, seat limits, and lifecycle guards.</p>
-          </div>
-          <button class="btn-primary-action" onclick="showNewPlanModal()">
-            <i class="fa-solid fa-plus"></i> Create Custom Plan
-          </button>
+        <div class="zb-table-container">
+          <table class="zb-table">
+            <thead>
+              <tr>
+                <th>Subscription Code</th>
+                <th>Client / Enterprise</th>
+                <th>Plan &amp; Frequency</th>
+                <th>Seats</th>
+                <th>Odoo Variant Surcharge</th>
+                <th>Monthly Rate</th>
+                <th>State Status</th>
+                <th>Next Invoice Date</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="overviewTableBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div class="plans-showcase-grid" id="plansShowcaseGrid">
-          <!-- Dynamic Plan Cards (Daily, Weekly, Monthly, Yearly) -->
+    </section>
+
+    <!-- =========================================================================
+         VIEW 2: QUOTATION COMPOSER (ZeBeyond Clean Split Architecture)
+         ========================================================================= -->
+    <section id="view-quotes" class="view-pane">
+      
+      <div class="section-title-bar">
+        <div>
+          <h2>Quotation Studio &amp; Agreement Generator</h2>
+          <p class="subtitle">Configure enterprise licenses with real-time seat volume discounting, Odoo variant surcharges (+$560/seat), and 18% GST.</p>
         </div>
+      </div>
 
-        <!-- Quotation Templates Section -->
-        <div class="quote-templates-box">
-          <div class="templates-header">
-            <div>
-              <h4>Standard Quotation Templates</h4>
-              <p>Pre-configured bundles with predefined product lines &amp; variant surcharges for fast sales checkout</p>
-            </div>
-            <span class="badge-emerald">Odoo sale.order.template</span>
-          </div>
-
-          <div class="templates-grid">
-            <div class="template-card">
-              <div class="template-top">
-                <span class="tpl-badge">TEMPLATE A</span>
-                <h5>Full Enterprise Cloud Suite</h5>
-              </div>
-              <ul class="tpl-list">
-                <li><i class="fa-solid fa-check text-olive"></i> Core Cloud ERP Base ($1,200/yr)</li>
-                <li><i class="fa-solid fa-check text-gold"></i> Odoo Enterprise Variant Surcharge (+$560/seat)</li>
-                <li><i class="fa-solid fa-check text-emerald"></i> 24/7 SLA Priority Support ($500/mo)</li>
-                <li><i class="fa-solid fa-check text-olive"></i> 18% GST Auto-Calculated</li>
-              </ul>
-              <button class="btn-outline-sm" onclick="applyTemplateAndCompose('Full Enterprise')">
-                <i class="fa-solid fa-wand-magic"></i> Load into Studio
-              </button>
-            </div>
-
-            <div class="template-card">
-              <div class="template-top">
-                <span class="tpl-badge">TEMPLATE B</span>
-                <h5>Mid-Market Growth Bundle</h5>
-              </div>
-              <ul class="tpl-list">
-                <li><i class="fa-solid fa-check text-olive"></i> Brightloop Growth Tier ($149/mo)</li>
-                <li><i class="fa-solid fa-check text-gold"></i> Standard Odoo Connector ($250/mo)</li>
-                <li><i class="fa-solid fa-check text-emerald"></i> 5 Minimum Seat Guarantee</li>
-                <li><i class="fa-solid fa-check text-olive"></i> 30-Day Quotation Lock</li>
-              </ul>
-              <button class="btn-outline-sm" onclick="applyTemplateAndCompose('Growth Bundle')">
-                <i class="fa-solid fa-wand-magic"></i> Load into Studio
-              </button>
-            </div>
-
-            <div class="template-card">
-              <div class="template-top">
-                <span class="tpl-badge">TEMPLATE C</span>
-                <h5>Agile Weekly Sprint Tier</h5>
-              </div>
-              <ul class="tpl-list">
-                <li><i class="fa-solid fa-check text-olive"></i> Micro-Recurrence Starter ($49/wk)</li>
-                <li><i class="fa-solid fa-check text-gold"></i> Flexible Auto-Close Policy</li>
-                <li><i class="fa-solid fa-check text-emerald"></i> Instant Pause / Resume Controls</li>
-                <li><i class="fa-solid fa-check text-olive"></i> Zero Long-Term Commitment</li>
-              </ul>
-              <button class="btn-outline-sm" onclick="applyTemplateAndCompose('Agile Sprint')">
-                <i class="fa-solid fa-wand-magic"></i> Load into Studio
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- VIEW 5: TIME-TRAVEL SIMULATOR (Judge Winning Feature) -->
-      <section id="view-simulation-time" class="viewport-section">
+      <div class="zb-split-grid">
         
-        <div class="simulator-layout">
-          <div class="sim-controls-panel">
-            <div class="sim-header">
-              <i class="fa-solid fa-gauge-high text-gold"></i>
-              <div>
-                <h3>Subscription Time-Travel Engine</h3>
-                <p>Simulate lifecycle progression across 1 day, 7 days, or 30 days without waiting in real time.</p>
+        <!-- Left: Technical Configuration Form -->
+        <div class="zb-panel">
+          <div class="panel-topbar">
+            <h3>Configuration Parameters</h3>
+            <span class="module-tag">Task 2 Engine</span>
+          </div>
+
+          <div class="zb-form-content">
+            
+            <div class="form-grid-2">
+              <div class="zb-field">
+                <label>Client Enterprise Name</label>
+                <input type="text" id="cfgCustomer" value="ZeBeyond Powertrain Dynamics" oninput="recalcQuoteLive()" />
+              </div>
+              <div class="zb-field">
+                <label>Procurement Email</label>
+                <input type="email" id="cfgEmail" value="licensing@zebeyond.engineering" oninput="recalcQuoteLive()" />
               </div>
             </div>
 
-            <div class="sim-clock-display">
-              <div class="clock-label">CURRENT SIMULATION TIME</div>
-              <div class="clock-value" id="simClockTime">31 October 2026, 12:00:00 UTC</div>
-              <div class="clock-advance-stat" id="simDaysAdvanced">+0 Days Elapsed</div>
+            <!-- Software Tier Cards -->
+            <div class="zb-field">
+              <label>Target Subscription Plan</label>
+              <div class="plan-cards-row">
+                <div class="plan-card active" onclick="pickPlan(this, 'growth')" data-plan="growth">
+                  <div class="pc-name">Mid-Market Growth</div>
+                  <div class="pc-price">$149<span>/mo</span></div>
+                  <div class="pc-desc">Monthly • Min 5 seats</div>
+                </div>
+
+                <div class="plan-card" onclick="pickPlan(this, 'starter')" data-plan="starter">
+                  <div class="pc-name">Agile Sprint Pack</div>
+                  <div class="pc-price">$49<span>/wk</span></div>
+                  <div class="pc-desc">Weekly • Min 1 seat</div>
+                </div>
+
+                <div class="plan-card" onclick="pickPlan(this, 'enterprise')" data-plan="enterprise">
+                  <div class="pc-name">Enterprise Cloud</div>
+                  <div class="pc-price">$399<span>/mo</span></div>
+                  <div class="pc-desc">Yearly • Min 10 seats</div>
+                </div>
+              </div>
             </div>
 
-            <div class="sim-actions-grid">
-              <button class="sim-btn" onclick="timeWarp(1)">
-                <i class="fa-solid fa-forward-step"></i>
-                <div>
-                  <b>+1 Day Warp</b>
-                  <span>Daily recurrence run</span>
-                </div>
-              </button>
-
-              <button class="sim-btn" onclick="timeWarp(7)">
-                <i class="fa-solid fa-forward"></i>
-                <div>
-                  <b>+7 Days Warp</b>
-                  <span>Weekly recurrence run</span>
-                </div>
-              </button>
-
-              <button class="sim-btn sim-primary" onclick="timeWarp(30)">
-                <i class="fa-solid fa-angles-right"></i>
-                <div>
-                  <b>+30 Days Warp (Full Cycle)</b>
-                  <span>Execute Monthly Invoicing</span>
-                </div>
-              </button>
-
-              <button class="sim-btn" onclick="resetSimulationClock()">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-                <div>
-                  <b>Reset to Today</b>
-                  <span>Back to 31 Oct 2026</span>
-                </div>
-              </button>
+            <!-- Committed Seats Slider -->
+            <div class="zb-field">
+              <div class="field-split-header">
+                <label>Committed User Seats</label>
+                <span class="seat-badge" id="seatValBadge">12 Seats</span>
+              </div>
+              <input type="range" id="seatSlider" min="1" max="100" value="12" class="zb-range" oninput="handleSeatRange(this.value)" />
+              <div class="range-labels">
+                <span>1 seat</span>
+                <span>10 (5% off)</span>
+                <span>25 (10% off)</span>
+                <span>50+ (15% off)</span>
+              </div>
+              <div id="minSeatsAlert" class="alert-strip hidden">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span id="minSeatsAlertText">Selected plan requires at least 5 seats.</span>
+              </div>
             </div>
 
-            <!-- Lifecycle Events Trigger Box -->
-            <div class="event-trigger-box">
-              <div class="box-head"><i class="fa-solid fa-triangle-exclamation text-olive"></i> Manual Edge-Case Triggers</div>
-              <div class="triggers-list">
-                <button class="trigger-btn" onclick="triggerSimEvent('pause_first_active')">
-                  <i class="fa-solid fa-pause"></i> Trigger Customer Pause Request on Active Sub
-                </button>
-                <button class="trigger-btn" onclick="triggerSimEvent('early_close_first_active')">
-                  <i class="fa-solid fa-handshake-slash"></i> Trigger Early Close with Prorated Refund
-                </button>
-                <button class="trigger-btn" onclick="triggerSimEvent('expire_quotes')">
-                  <i class="fa-solid fa-hourglass-end"></i> Check 30-Day Expiry on All Quotes
-                </button>
+            <!-- Core Cloud ERP + Odoo Enterprise Variant Surcharge Box -->
+            <div class="surcharge-box-zb">
+              <div class="surcharge-box-top">
+                <div>
+                  <span class="box-tag"><i class="fa-solid fa-cube text-green"></i> Product Specification Variant</span>
+                  <h4>Core Cloud ERP + Odoo Enterprise Edition</h4>
+                  <p>Base rate: $1,200.00/yr. Adds Odoo 18 Multi-Company Accounting &amp; Warehouse Sync.</p>
+                </div>
+                <label class="zb-toggle">
+                  <input type="checkbox" id="odooSurchargeToggle" checked onchange="recalcQuoteLive()" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="surcharge-tag-row">
+                <span class="surcharge-pill">+ $560.00 / seat Odoo Variant Surcharge</span>
+                <span class="surcharge-pill neutral">Variant: v18.0-EE</span>
+              </div>
+            </div>
+
+            <!-- Add-on Line Items -->
+            <div class="zb-field">
+              <label>Enterprise Add-On Line Items</label>
+              <div class="addons-group">
+                <label class="addon-card">
+                  <input type="checkbox" id="addonSLA" checked onchange="recalcQuoteLive()" />
+                  <div class="addon-info">
+                    <span class="addon-title">24/7 Mission-Critical SLA &amp; Support</span>
+                    <span class="addon-rate">+$500.00 / month</span>
+                  </div>
+                </label>
+
+                <label class="addon-card">
+                  <input type="checkbox" id="addonDR" onchange="recalcQuoteLive()" />
+                  <div class="addon-info">
+                    <span class="addon-title">Multi-Region Hot-Failover &amp; Disaster Recovery</span>
+                    <span class="addon-rate">+$250.00 / month</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Contract Governance Policies -->
+            <div class="zb-field border-top-divider">
+              <label>Contract Governance Policies</label>
+              <div class="policy-grid-2">
+                <label class="policy-item">
+                  <input type="checkbox" id="polAutoClose" checked />
+                  <span>Auto-close on expiration</span>
+                </label>
+                <label class="policy-item">
+                  <input type="checkbox" id="polClosable" checked />
+                  <span>Allow early termination</span>
+                </label>
+                <label class="policy-item">
+                  <input type="checkbox" id="polPausable" checked />
+                  <span>Allow pause &amp; resume</span>
+                </label>
+                <label class="policy-item">
+                  <input type="checkbox" id="polRenewable" checked />
+                  <span>Allow contract renewal</span>
+                </label>
               </div>
             </div>
 
           </div>
+        </div>
 
-          <!-- Simulation Live Activity Feed -->
-          <div class="sim-activity-panel">
-            <div class="activity-header">
-              <div class="act-title">
-                <i class="fa-solid fa-satellite-dish text-emerald"></i>
-                <h4>Engine Telemetry &amp; State Transition Audit Log</h4>
+        <!-- Right: Official Quotation Document Preview (Stripe/ZeBeyond PO Style) -->
+        <div class="zb-panel quote-doc-panel">
+          <div class="panel-topbar">
+            <h3>Official Quotation Document</h3>
+            <span class="validity-chip"><i class="fa-regular fa-clock"></i> 30-Day Validity Locked</span>
+          </div>
+
+          <div class="doc-body">
+            
+            <div class="doc-meta-header">
+              <div>
+                <div class="doc-brand-title">Brightloop Software Inc.</div>
+                <div class="doc-brand-sub">Enterprise Cloud Subscription Agreement</div>
               </div>
-              <button class="btn-ghost-sm" onclick="clearAuditLog()"><i class="fa-solid fa-trash"></i> Clear</button>
+              <div class="doc-ref-badge">
+                <span class="ref-sub">QUOTATION REF</span>
+                <span class="ref-id" id="docQuoteRef">QT-2026-0842</span>
+              </div>
             </div>
 
-            <div class="activity-timeline" id="simActivityTimeline">
-              <!-- Chronological state machine logs stream here -->
+            <div class="doc-parties-grid">
+              <div>
+                <span class="label-dim">PREPARED FOR</span>
+                <div class="val-bold" id="docCustomer">ZeBeyond Powertrain Dynamics</div>
+                <div class="val-sub" id="docEmail">licensing@zebeyond.engineering</div>
+              </div>
+              <div>
+                <span class="label-dim">DATE ISSUED</span>
+                <div class="val-bold" id="docIssueDate">31 Oct 2026</div>
+                <div class="val-sub">Net 30 Invoicing Terms</div>
+              </div>
+              <div>
+                <span class="label-dim">VALID UNTIL</span>
+                <div class="val-bold" id="docExpiryDate">30 Nov 2026</div>
+                <div class="val-sub text-green">18% GST Verified</div>
+              </div>
+            </div>
+
+            <!-- Items Table -->
+            <div class="doc-items-wrap">
+              <table class="doc-items-table">
+                <thead>
+                  <tr>
+                    <th>Line Item Description</th>
+                    <th>Qty</th>
+                    <th>Rate</th>
+                    <th class="text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody id="docLineItemsBody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Financial Calculations Breakdown -->
+            <div class="doc-breakdown-card">
+              <div class="breakdown-row">
+                <span>Base Line Items Subtotal:</span>
+                <span id="docSubtotalVal">$2,288.00</span>
+              </div>
+              <div class="breakdown-row" id="docSurchargeRow">
+                <span>Odoo Enterprise Surcharge (+$560 &times; <span id="docSurchargeSeats">12</span>):</span>
+                <span id="docSurchargeVal" class="text-gold">+$6,720.00</span>
+              </div>
+              <div class="breakdown-row" id="docDiscountRow">
+                <span>Volume Tier Discount (5%):</span>
+                <span id="docDiscountVal" class="text-green">-$450.40</span>
+              </div>
+              <div class="breakdown-row">
+                <span>GST Tax (18% — CGST 9% + SGST 9%):</span>
+                <span id="docTaxVal">$1,540.37</span>
+              </div>
+              <div class="breakdown-row grand-total-row">
+                <span>Net Total Payable:</span>
+                <span id="docGrandTotalVal" class="text-green">$10,097.97</span>
+              </div>
+            </div>
+
+            <!-- Conversion Action Buttons -->
+            <div class="doc-action-group">
+              <button class="btn-activate-license" onclick="activateQuotationToSubscription()">
+                <i class="fa-solid fa-bolt"></i> Confirm &amp; Activate License Node
+              </button>
+              <button class="btn-zb-secondary" onclick="window.print()">
+                <i class="fa-solid fa-print"></i> Export PDF
+              </button>
+            </div>
+
+            <div class="doc-footer-legal">
+              <i class="fa-solid fa-lock text-dim"></i>
+              <span>Governed by Brightloop Enterprise SLA. Cryptographically verified against Odoo 18 Wire Protocol ledger.</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =========================================================================
+         VIEW 3: SUBSCRIPTIONS & LIFECYCLE STATE MACHINE
+         ========================================================================= -->
+    <section id="view-subscriptions" class="view-pane">
+      
+      <div class="section-title-bar">
+        <div>
+          <h2>Subscription Lifecycle State Machine</h2>
+          <p class="subtitle">Deterministic transitions governed by contract policies: Draft ➔ Quotation ➔ Confirmed ➔ Active ➔ Paused ➔ Closed.</p>
+        </div>
+
+        <div class="lifecycle-stepper">
+          <span class="step-point">Draft</span>
+          <i class="fa-solid fa-chevron-right"></i>
+          <span class="step-point">Quotation</span>
+          <i class="fa-solid fa-chevron-right"></i>
+          <span class="step-point">Confirmed</span>
+          <i class="fa-solid fa-chevron-right"></i>
+          <span class="step-point active">Active</span>
+          <i class="fa-solid fa-arrows-left-right"></i>
+          <span class="step-point">Paused</span>
+          <i class="fa-solid fa-chevron-right"></i>
+          <span class="step-point">Closed</span>
+        </div>
+      </div>
+
+      <!-- Filter Controls & Data Table -->
+      <div class="zb-panel">
+        <div class="panel-topbar">
+          <div class="pills-group">
+            <button class="pill-tab active" onclick="setLifecycleFilter('all', this)">All Records (<span id="pillAll">0</span>)</button>
+            <button class="pill-tab" onclick="setLifecycleFilter('active', this)">Active (<span id="pillActive">0</span>)</button>
+            <button class="pill-tab" onclick="setLifecycleFilter('quotation', this)">Quotations (<span id="pillQuotes">0</span>)</button>
+            <button class="pill-tab" onclick="setLifecycleFilter('paused', this)">Paused (<span id="pillPaused">0</span>)</button>
+            <button class="pill-tab" onclick="setLifecycleFilter('closed', this)">Closed (<span id="pillClosed">0</span>)</button>
+          </div>
+          <input type="text" class="zb-search" id="subSearchInput" placeholder="Filter subscriptions..." oninput="filterLifecycleTable()" />
+        </div>
+
+        <div class="zb-table-container">
+          <table class="zb-table">
+            <thead>
+              <tr>
+                <th>Subscription ID</th>
+                <th>Subscriber Organization</th>
+                <th>Plan Tier</th>
+                <th>Billing Interval</th>
+                <th>Allocated Seats</th>
+                <th>Monthly Rate</th>
+                <th>Lifecycle Status</th>
+                <th>Policy Safeguards</th>
+                <th class="text-right">State Machine Actions</th>
+              </tr>
+            </thead>
+            <tbody id="lifecycleTableBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =========================================================================
+         VIEW 4: PLANS & RECURRENCE MATRIX
+         ========================================================================= -->
+    <section id="view-plans" class="view-pane">
+      
+      <div class="section-title-bar">
+        <div>
+          <h2>Standard Subscription Plans &amp; Templates</h2>
+          <p class="subtitle">Multi-recurrence matrix (Daily, Weekly, Monthly, Yearly) with seat validation and contract governance rules.</p>
+        </div>
+      </div>
+
+      <div class="plans-showcase-grid" id="plansMatrixGrid">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Predefined Quotation Templates -->
+      <div class="zb-panel" style="margin-top: 24px;">
+        <div class="panel-topbar">
+          <div>
+            <h3>Pre-configured Quotation Templates (Odoo sale.order.template)</h3>
+            <p class="subtitle" style="margin-top:2px;">Standardized product bundles for instant sales quote dispatching.</p>
+          </div>
+          <span class="module-tag">Standardized Lines</span>
+        </div>
+
+        <div class="templates-grid-3">
+          <div class="template-card">
+            <span class="t-badge">TEMPLATE 1</span>
+            <h4>Full Enterprise ERP Suite</h4>
+            <p class="text-dim">Core Cloud ERP Base ($1,200/yr) + Odoo Enterprise Variant Surcharge (+$560/seat) + 24/7 SLA Support ($500/mo).</p>
+            <button class="btn-zb-secondary" onclick="loadTemplateAndCompose('enterprise')">Load into Quote Studio</button>
+          </div>
+
+          <div class="template-card">
+            <span class="t-badge">TEMPLATE 2</span>
+            <h4>Mid-Market Growth Bundle</h4>
+            <p class="text-dim">Growth Tier ($149/mo) with 5 minimum seat enforcement and standard Odoo sync connector.</p>
+            <button class="btn-zb-secondary" onclick="loadTemplateAndCompose('growth')">Load into Quote Studio</button>
+          </div>
+
+          <div class="template-card">
+            <span class="t-badge">TEMPLATE 3</span>
+            <h4>Agile Sprint Weekly Pack</h4>
+            <p class="text-dim">Weekly recurrence plan ($49/week) with 1-seat minimum guarantee and flexible auto-close policy.</p>
+            <button class="btn-zb-secondary" onclick="loadTemplateAndCompose('starter')">Load into Quote Studio</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =========================================================================
+         VIEW 5: SIMULATION CYCLE ENGINE (ZeBeyond Simulation-First Philosophy)
+         ========================================================================= -->
+    <section id="view-simulator" class="view-pane">
+      
+      <div class="section-title-bar">
+        <div>
+          <h2>Billing Cycle &amp; State Simulation Engine</h2>
+          <p class="subtitle">Advance system time to verify recurring billing, automated invoice dispatching, and proration accounting without waiting 30 days.</p>
+        </div>
+
+        <div class="sim-clock-badge">
+          <span>Simulation Date:</span>
+          <b id="simDateDisplay">31 October 2026</b>
+        </div>
+      </div>
+
+      <div class="sim-grid-layout">
+        
+        <!-- Simulation Action Controls -->
+        <div class="zb-panel">
+          <div class="panel-topbar">
+            <h3>Cycle Progression Controls</h3>
+          </div>
+
+          <div class="sim-controls-wrapper">
+            <div class="sim-btn-cards-grid">
+              <button class="sim-card-btn" onclick="advanceSimulation(1)">
+                <i class="fa-solid fa-calendar-day text-green"></i>
+                <div>
+                  <b>Advance +1 Day</b>
+                  <span>Executes Daily recurrence runs</span>
+                </div>
+              </button>
+
+              <button class="sim-card-btn" onclick="advanceSimulation(7)">
+                <i class="fa-solid fa-calendar-week text-green"></i>
+                <div>
+                  <b>Advance +7 Days</b>
+                  <span>Executes Weekly sprint cycles</span>
+                </div>
+              </button>
+
+              <button class="sim-card-btn featured" onclick="advanceSimulation(30)">
+                <i class="fa-solid fa-calendar-days text-green"></i>
+                <div>
+                  <b>Advance +30 Days (Full Cycle)</b>
+                  <span>Reconciles monthly recurring invoices</span>
+                </div>
+              </button>
+
+              <button class="sim-card-btn" onclick="resetSimulation()">
+                <i class="fa-solid fa-rotate-left text-dim"></i>
+                <div>
+                  <b>Reset System Clock</b>
+                  <span>Back to baseline: 31 Oct 2026</span>
+                </div>
+              </button>
+            </div>
+
+            <div class="edge-case-section">
+              <label>Manual Edge-Case Triggers</label>
+              <div class="edge-buttons">
+                <button class="btn-zb-secondary" onclick="triggerEdgeCase('pause')">Trigger Customer Pause Action</button>
+                <button class="btn-zb-secondary" onclick="triggerEdgeCase('early_close')">Trigger Early Termination (Calculate Prorated Refund)</button>
+              </div>
             </div>
           </div>
         </div>
 
-      </section>
+        <!-- Telemetry Audit Trail -->
+        <div class="zb-panel">
+          <div class="panel-topbar">
+            <h3>Engine Telemetry &amp; State Transition Audit Log</h3>
+            <button class="btn-text-ghost" onclick="clearTelemetry()">Clear Log</button>
+          </div>
 
-    </main>
-  </div>
+          <div class="telemetry-feed" id="telemetryFeed">
+            <!-- Event stream lines -->
+          </div>
+        </div>
 
-  <!-- Slide-Up Odoo Wire Protocol Console Drawer -->
-  <div id="odooWireDrawer" class="odoo-drawer closed">
-    <div class="odoo-drawer-header">
-      <div class="odoo-title">
-        <span class="status-pulse-dot"></span>
-        <i class="fa-solid fa-network-wired text-olive"></i>
-        <b>Odoo 18 Enterprise Wire Protocol Inspector</b>
-        <span class="odoo-badge">JSON-RPC / XML-RPC</span>
       </div>
-      <div class="odoo-controls">
-        <button class="btn-ghost-sm" onclick="clearOdooLogs()"><i class="fa-solid fa-eraser"></i> Clear</button>
-        <button class="btn-ghost-sm" onclick="toggleOdooDrawer()"><i class="fa-solid fa-xmark"></i> Close</button>
-      </div>
-    </div>
-    <div class="odoo-drawer-body" id="odooWireLogContainer">
-      <!-- Wire logs populate here -->
-    </div>
-  </div>
 
-  <!-- Toast Notification Container -->
-  <div id="toastContainer" class="toast-container"></div>
+    </section>
 
-  <!-- Confetti Canvas for Quote Conversion -->
-  <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+  </main>
+
+  <!-- Toast Notification Center -->
+  <div id="toastRoot" class="toast-center"></div>
 
   <script src="app.js"></script>
 </body>
