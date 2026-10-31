@@ -1,0 +1,16 @@
+{
+  "benchmark_timestamp": "2026-10-31T07:57:16Z",
+  "author": "Ritesh Tiwari",
+  "total_subscriptions_tested": 10000,
+  "total_state_transitions": 60000,
+  "illegal_transitions_blocked": 10000,
+  "total_runtime_seconds": 0.0185,
+  "throughput_ops_per_second": 3240623.07,
+  "latency_us": {
+    "p50": 0.125,
+    "p95": 0.167,
+    "p99": 0.208,
+    "avg": 0.143
+  },
+  "status": "PASSED"
+}
