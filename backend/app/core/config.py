@@ -24,6 +24,19 @@ class Settings(BaseSettings):
     # IMPORTANT: JWT token expiry configuration
     access_token_expire_minutes: int = 30
 
+    # Password reset configuration
+    reset_token_expire_minutes: int = 15
+
+    # SMTP configuration for password reset emails
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from_email: str = ""
+
+    # Frontend URL for reset link
+    frontend_url: str = "http://localhost:3000"
+
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,
         env_file_encoding="utf-8",

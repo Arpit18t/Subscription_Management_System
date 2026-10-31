@@ -55,3 +55,23 @@ def get_current_user(
         raise unauthorized
 
     return user
+
+
+# --------------- Role-Based Access Control ---------------
+
+def require_role(*allowed_roles: str):
+    """Return a dependency that enforces the user has one of the
+    allowed roles. Use as:  Depends(require_role("admin"))
+    """
+
+    def role_checker(
+        current_user: User = Depends(get_current_user),
+    ) -> User:
+        if current_user.role not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to perform this action.",
+            )
+        return current_user
+
+    return role_checker
