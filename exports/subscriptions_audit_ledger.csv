@@ -1,0 +1,7 @@
+id,partner_name,partner_gstin,plan_name,billing_cycle,seats,base_rate,variant,variant_surcharge_per_seat,total_surcharge,core_erp_fee,subtotal,cgst_9,sgst_9,total_tax_18,gross_total,prorated_credit,net_revenue,state,mrr,arr,start_date,end_date
+SUB-2026-001,Nexus Global Corp,09AAACN1234F1Z5,Enterprise Cloud Core,365-day,25,4999.0,Odoo Enterprise Edition,560.0,14000.0,1200.0,20199.0,1817.91,1817.91,3635.82,23834.82,0.0,23834.82,active,1683.25,20199.0,2026-01-01,2026-12-31
+SUB-2026-002,Kinetix Technologies,07BBBPK9876E1Z2,Mid-Market Growth,30-day,12,599.0,Odoo Enterprise Edition,560.0,6720.0,0.0,7319.0,658.71,658.71,1317.42,8636.42,0.0,8636.42,active,7319.0,87828.0,2026-02-01,2026-03-03
+SUB-2026-003,Apex Logistics Ltd,27AABCA4321D1ZM,Agile Sprint,7-day,8,199.0,Standard Community,0.0,0.0,0.0,199.0,17.91,17.91,35.82,234.82,0.0,234.82,paused,861.67,10348.0,2026-02-15,2026-02-22
+SUB-2026-004,Vortex Dynamics Inc,09CCCVD5432G1Z8,Enterprise Cloud Core,365-day,50,4999.0,Odoo Enterprise Edition,560.0,28000.0,1200.0,34199.0,3077.91,3077.91,6155.82,40354.82,0.0,40354.82,active,2849.92,34199.0,2026-01-15,2027-01-14
+SUB-2026-005,Solaria Analytics,29DDDPS1111H1Z0,Daily Elastic,1-day,4,49.0,Standard Community,0.0,0.0,0.0,49.0,4.41,4.41,8.82,57.82,49.0,8.82,closed,1470.0,17885.0,2026-02-20,2026-02-21
+SUB-2026-006,Zenith Mediaworks,06EEEZM8888K1Z4,Mid-Market Growth,30-day,15,599.0,Odoo Enterprise Edition,560.0,8400.0,0.0,8999.0,809.91,809.91,1619.82,10618.82,0.0,10618.82,quotation,8999.0,107988.0,2026-03-01,2026-03-31
