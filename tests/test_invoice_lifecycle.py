@@ -116,3 +116,4 @@ def test_api_confirm_and_cancel_endpoints(
     )
     assert res.status_code == 200
     assert res.json()["status"] == "cancelled"
+

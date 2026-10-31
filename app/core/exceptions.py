@@ -36,3 +36,4 @@ class ForbiddenException(BrightloopException):
     """Raised when permission is denied."""
     def __init__(self, message: str = "Operation not permitted"):
         super().__init__(message, code="FORBIDDEN")
+

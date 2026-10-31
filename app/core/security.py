@@ -15,3 +15,4 @@ class AuthenticatedUser(BaseModel):
     @property
     def is_admin(self) -> bool:
         return self.role.lower() == "admin"
+

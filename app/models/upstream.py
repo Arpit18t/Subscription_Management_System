@@ -152,3 +152,4 @@ class SubscriptionItem(Base):
 
     subscription: Mapped["Subscription"] = relationship("Subscription", back_populates="items")
     product: Mapped["Product"] = relationship("Product")
+

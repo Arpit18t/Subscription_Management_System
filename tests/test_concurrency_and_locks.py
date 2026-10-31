@@ -254,3 +254,4 @@ def test_concurrent_discount_usage_limit():
         assert final_rule.current_usage_count <= 2
     finally:
         verify_session.close()
+

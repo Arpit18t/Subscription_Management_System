@@ -115,3 +115,4 @@ def require_admin(
             detail="Admin privileges required for this operation",
         )
     return current_user
+

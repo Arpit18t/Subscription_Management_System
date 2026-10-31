@@ -204,3 +204,4 @@ def test_admin_successful_discount_creation(client: TestClient, admin_headers: d
     assert data["code"] == "SUMMER30"
     assert data["discount_value"] == "30.00"
     assert data["current_usage_count"] == 0
+

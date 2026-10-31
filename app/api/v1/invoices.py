@@ -117,3 +117,4 @@ def cancel_invoice(
     reason = payload.reason if payload else "Cancelled by admin"
     invoice = InvoiceService.cancel_invoice(db, invoice_id, reason=reason)
     return invoice
+

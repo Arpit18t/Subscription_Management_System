@@ -347,3 +347,4 @@ class BillingEngine:
         db.commit()
         db.refresh(billing_run)
         return billing_run
+

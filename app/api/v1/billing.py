@@ -56,3 +56,4 @@ def get_billing_runs(
     offset = (page - 1) * page_size
     runs = query.offset(offset).limit(page_size).all()
     return runs
+

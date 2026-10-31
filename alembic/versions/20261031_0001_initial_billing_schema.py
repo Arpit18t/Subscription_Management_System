@@ -290,3 +290,4 @@ def downgrade() -> None:
     op.drop_table('invoices')
     op.drop_table('tax_rules')
     op.drop_table('discount_rules')
+

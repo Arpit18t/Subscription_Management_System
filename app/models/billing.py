@@ -458,3 +458,4 @@ class BillingAttempt(Base):
         ),
         Index("idx_billing_attempt_sub_run", "subscription_id", "billing_run_id"),
     )
+

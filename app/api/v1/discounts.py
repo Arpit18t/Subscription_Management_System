@@ -75,3 +75,4 @@ def list_discount_rules(
     offset = (page - 1) * page_size
     rules = query.offset(offset).limit(page_size).all()
     return rules
+

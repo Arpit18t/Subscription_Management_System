@@ -100,3 +100,4 @@ def test_multiple_active_taxes_cumulative(db: Session):
     # 6.00 + 2.50 = 8.50
     assert total_tax == Decimal("8.50")
     assert len(applied) == 2
+

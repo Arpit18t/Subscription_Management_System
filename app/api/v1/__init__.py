@@ -13,3 +13,4 @@ api_v1_router.include_router(discounts_router)
 api_v1_router.include_router(payments_router)
 
 __all__ = ["api_v1_router"]
+

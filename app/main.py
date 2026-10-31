@@ -88,3 +88,4 @@ def health_check():
 
 # Mount API V1 routes
 app.include_router(api_v1_router, prefix=settings.API_V1_PREFIX)
+

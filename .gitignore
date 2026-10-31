@@ -26,3 +26,4 @@ htmlcov/
 # Database / SQLite
 *.sqlite3
 *.db
+

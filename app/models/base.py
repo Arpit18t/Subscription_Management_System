@@ -14,3 +14,4 @@ def utc_now() -> datetime:
 
 class Base(DeclarativeBase):
     pass
+
